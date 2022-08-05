@@ -4,10 +4,11 @@ WORKDIR /app
 
 COPY go.mod ./
 COPY go.sum ./
+
 RUN go mod download
 
-COPY *.go ./
+COPY . ./
 
-RUN go build -o /url-shortener
+RUN go build -v -o server /app/cmd/main.go
 
-CMD [ "/url-shortener" ]
+CMD ["/app/server" ]

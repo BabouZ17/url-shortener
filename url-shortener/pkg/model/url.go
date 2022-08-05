@@ -1,7 +1,7 @@
 package model
 
 type Url struct {
-	Id string `json:"id"`
-	Alias string `json:"alias"`
-	Target string `json:"target" binding:"required"`
+	ID     uint   `json:"id" gorm:"primaryKey"`
+	Alias  string `json:"alias" gorm:"not null"`
+	Target string `json:"target" gorm:"not null"`
 }

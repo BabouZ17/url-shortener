@@ -2,71 +2,37 @@ package controller
 
 import (
 	"net/http"
-	"net/url"
+	"strconv"
 	"github.com/gin-gonic/gin"
 	"github.com/BabouZ17/url-shortener/pkg/model"
+	"github.com/BabouZ17/url-shortener/pkg/repository"
 )
 
-var urls = []model.Url{
-	model.Url{
-		Id: "1",
-		Alias: "https://1234.com",
-		Target: "https://www.google.com",
-	},
+type UrlController struct {
+	repository *repository.UrlRepository
 }
 
-func GetUrl(c *gin.Context) {
-	id := c.Param("id")
-	for i, url := range(urls) {
-		if url.Id == id {
-			c.JSON(http.StatusOK, urls[i])
-		}
-	}
-	c.JSON(http.StatusNotFound, gin.H{"msg": "Url not found"})
+func New(repository *repository.UrlRepository) *UrlController {
+	return &UrlController{repository}
 }
 
-func AddUrl(c *gin.Context) {
-	var newUrl model.Url
-	
-	if err := c.ShouldBindJSON(&newUrl); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "Invalid data received"})
-		return
-	}
+func (uc UrlController) ListUrls(c *gin.Context) {
+	var urls []model.Url
+	urls = uc.repository.List()
+	c.JSON(http.StatusOK, urls)
+}
 
-	_, err := url.ParseRequestURI(newUrl.Target)
+func (uc UrlController) GetUrl(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "Invalid target for url"})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "Invalid id received"})
 		return
 	}
 
-	urls = append(urls, newUrl)
-	c.JSON(http.StatusCreated, newUrl)
-}
-
-func ListUrls(c *gin.Context) {
-	c.JSON(http.StatusOK, urls)
-}
-
-func DeleteUrl(c *gin.Context) {
-	id := c.Param("id")
-
-	for i, url := range(urls) {
-		if url.Id == id {
-			var newUrls = make([]model.Url, 0)
-			var urlDeleted = url
-
-			newUrls = append(newUrls, urls[:i]...)
-			newUrls = append(newUrls, urls[i+1:]...)
-			urls = newUrls
-			
-			c.JSON(http.StatusOK, urlDeleted)
-			return
-		}
+	url, err := uc.repository.Get(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"msg": err.Error()})
+		return
 	}
-	c.JSON(http.StatusNotFound, gin.H{"msg": "Url not found"})
-}
-
-func DeleteUrls(c *gin.Context) {
-	urls = []model.Url{}
-	c.JSON(http.StatusOK, urls)
+	c.JSON(http.StatusOK, url)
 }

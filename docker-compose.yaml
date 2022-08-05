@@ -1,20 +1,29 @@
 version: "3.7"
 services:
-    url-shortener:
-        build: url-shortener
-        container_name: url-shortener
-    redis:
-        image: redis
-        hostname: redis
-        volumes: 
-            - redis_volume:/data
-    # optional
-    redis-commander:
-        image: rediscommander/redis-commander:latest
+    #url-shortener:
+    #    build: ./url-shortener
+    #    container_name: url-shortener
+    #    environment:
+    #        CONFIG_PATH: /app/pkg/config/config.json
+    #    ports:
+    #        - 8080:8080
+    postgres:
+        image: postgres
         restart: always
+        container_name: postgres
         environment:
-            - REDIS_HOSTS=local:redis:6379
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: admin # obviously not the best
+            POSTGRES_DB: url_shortener
         ports:
-        - "8081:8081"
+            - 5432:5432
+        volumes:
+            - postgres_volume:/var/lib/postgresql/data
+    adminer:
+        image: adminer
+        restart: always
+        container_name: adminer
+        ports:
+            - 8081:8080
 volumes:
-    redis_volume:
+    postgres_volume:

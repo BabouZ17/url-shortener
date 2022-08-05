@@ -5,15 +5,19 @@ import (
 	"github.com/BabouZ17/url-shortener/pkg/controller"
 )
 
-func SetRoutes(router *gin.Engine) *gin.Engine {
-	api := router.Group("/")
+func UrlRoutes(router *gin.Engine, controller *controller.UrlController) *gin.Engine {
+	url := router.Group("/")
 	{
-		api.GET("/urls", controller.ListUrls)
-		api.GET("/urls/:id", controller.GetUrl)
-		api.POST("urls", controller.AddUrl)
-		api.DELETE("urls/:id", controller.DeleteUrl)
-		api.DELETE("urls", controller.DeleteUrls)
+		url.GET("/urls", controller.ListUrls)
+		url.GET("/urls/:id", controller.GetUrl)
+		//url.POST("urls", controller.AddUrl)
+		//url.DELETE("urls/:id", controller.DeleteUrl)
+		//url.DELETE("urls", controller.DeleteUrls)
 	}
+	return router
+}
+
+func StatusRoutes(router *gin.Engine) *gin.Engine {
 	status := router.Group("/status")
 	{
 		status.GET("/health", controller.Alive)

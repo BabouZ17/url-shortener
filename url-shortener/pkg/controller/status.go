@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"net/http"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func Alive(c *gin.Context) {

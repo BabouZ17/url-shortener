@@ -20,7 +20,8 @@ func UrlRoutes(router *gin.Engine, controller *controller.UrlController) *gin.En
 func StatusRoutes(router *gin.Engine, controller *controller.StatusController) *gin.Engine {
 	status := router.Group("/status")
 	{
-		status.GET("/health", controller.Alive)
+		status.GET("/readiness", controller.Readiness)
+		status.GET("/liveness", controller.Liveness)
 	}
 	return router
 }

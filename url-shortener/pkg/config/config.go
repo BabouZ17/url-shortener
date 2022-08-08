@@ -15,8 +15,13 @@ type PostgresConfig struct {
 	Db       string `json:"db"`
 }
 
+type Shortener struct {
+	AliasLength int `json:"aliasLength`
+}
+
 type Config struct {
 	PostgresConfig PostgresConfig `json:"postgres"`
+	Shortener      Shortener      `json:"shortener`
 }
 
 func New(path string) Config {

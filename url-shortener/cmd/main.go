@@ -1,7 +1,9 @@
 package main
 
 import (
+	"math/rand"
 	"os"
+	"time"
 
 	"github.com/BabouZ17/url-shortener/pkg/config"
 	"github.com/BabouZ17/url-shortener/pkg/controller"
@@ -12,9 +14,13 @@ import (
 )
 
 func initialize() {
+	// Necessary for rand package functions
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	r := gin.Default()
 	config := config.New(os.Getenv("CONFIG_PATH"))
 	dataBase := db.New(config)
+
 	urlRepository := repository.NewUrlRepository(dataBase)
 	urlController := controller.NewUrlController(urlRepository)
 	statusController := controller.NewStatusController(urlRepository)

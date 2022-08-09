@@ -7,7 +7,7 @@ import (
 
 	"github.com/BabouZ17/url-shortener/pkg/model"
 	"github.com/BabouZ17/url-shortener/pkg/repository"
-	"github.com/BabouZ17/url-shortener/pkg/shortener"
+	"github.com/BabouZ17/url-shortener/pkg/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,7 +30,7 @@ func (uc UrlController) AddUrl(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 	}
 
-	url := model.NewUrl(shortener.RandomString(6), newUrl.Target)
+	url := model.NewUrl(service.RandomString(6), newUrl.Target)
 	url, err := uc.repository.Add(url)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})

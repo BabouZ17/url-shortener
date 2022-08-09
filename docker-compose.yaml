@@ -1,12 +1,13 @@
 version: "3.7"
 services:
-    #url-shortener:
-    #    build: ./url-shortener
-    #    container_name: url-shortener
-    #    environment:
-    #        CONFIG_PATH: /app/pkg/config/config.json
-    #    ports:
-    #        - 8080:8080
+    url-shortener:
+        build: ./url-shortener
+        container_name: url-shortener
+        environment:
+            POSTGRES_PASSWORD: admin
+            CONFIG_PATH: /app/pkg/config/dev.json
+        ports:
+            - 8080:8080
     postgres:
         image: postgres
         restart: always
@@ -19,6 +20,7 @@ services:
             - 5432:5432
         volumes:
             - postgres_volume:/var/lib/postgresql/data
+    # totally optional
     adminer:
         image: adminer
         restart: always
